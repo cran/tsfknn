@@ -1,6 +1,3 @@
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # tsfknn
 
 The goal of tsfknn is to forecast time series using KNN regression
