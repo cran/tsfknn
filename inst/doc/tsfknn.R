@@ -1,4 +1,4 @@
-## ---- echo = FALSE------------------------------------------------------------
+## ----echo = FALSE-------------------------------------------------------------
 knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 
@@ -25,6 +25,7 @@ autoplot(pred, highlight = "neighbors", faceting = FALSE)
 ## -----------------------------------------------------------------------------
 timeS <- window(UKgas, start = c(1976, 1))
 pred <- knn_forecasting(timeS, h = 2, lags = 1:4, k = 2, msas = "recursive")
+library(ggplot2)
 autoplot(pred, highlight = "neighbors")
 
 ## -----------------------------------------------------------------------------
@@ -39,6 +40,20 @@ pred <- knn_forecasting(timeS, h = 3, transform = "none")
 plot(pred)
 pred2 <- knn_forecasting(timeS, h = 3, transform = "additive")
 plot(pred2)
+
+## -----------------------------------------------------------------------------
+timeS <- ts(c(1, 3, 7, 9, 10, 12))
+model_n <- knn_forecasting(timeS, h = 1, lags = 1:2, k = 2, transform = "none")
+knn_examples(model_n)
+plot(model_n)
+
+## -----------------------------------------------------------------------------
+model_a <- knn_forecasting(timeS, h = 1, lags = 1:2, k = 2, transform = "additive")
+knn_examples(model_a)
+plot(model_a)
+
+## -----------------------------------------------------------------------------
+model_a$pred
 
 ## -----------------------------------------------------------------------------
 pred <- knn_forecasting(ts(1:20), h = 4, lags = 1:2, k = 2)

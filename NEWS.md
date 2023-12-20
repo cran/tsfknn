@@ -1,3 +1,12 @@
+# tsfknn
+
+* Bug fixed computing weights when neighbors are weighted by distance
+* When lags are selected automatically it is not allowed only one lag
+  and the additive or multiplicative transformation
+* It is not allowed only one autoregressive lag and the additive or
+  multiplicative transformation
+* More information in the vignette about transformations  
+
 # tsfknn 0.5.2
 
 * bug fixed in rolling_origin
