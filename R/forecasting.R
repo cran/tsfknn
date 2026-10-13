@@ -21,7 +21,7 @@
 #'     "weighted" or "mean" (the default).
 #' @param transform A character value indicating whether the training samples
 #'   are transformed. If the time series has a trend it is recommended. By
-#'   default is \code{"multiplicative"} (multiplicative transformation). It is also
+#'   default is \code{"additive"} (additive transformation). It is also
 #'   possible a multiplicative transformation or no transformation.
 #' @return An object of class \code{"knnForecast"}. The
 #'     function \code{\link[base]{summary}} can be used to obtain or print a
@@ -46,12 +46,14 @@ knn_forecasting <- function(timeS, h, lags = NULL, k = c(3, 5, 7),
                             cf = c("mean", "median", "weighted"),
                             transform = c("additive", "multiplicative", "none")) {
   # Check timeS parameter
-  stopifnot(stats::is.ts(timeS) || is.vector(timeS, mode = "numeric"))
+  if (! (stats::is.ts(timeS) || is.vector(timeS, mode = "numeric")))
+    stop("timeS parameter should be of class ts or a numeric vector")
   if (! stats::is.ts(timeS))
     timeS <- stats::as.ts(timeS)
 
   # Check h parameter
-  stopifnot(is.numeric(h), length(h) == 1, h >= 1)
+  if (! (is.numeric(h) && length(h) == 1 && h >= 1 && floor(h) == h))
+    stop("h parameter should be an integer scalar value >= 1")
 
   # msas parameter
   msas <- match.arg(msas)
@@ -122,8 +124,8 @@ knn_forecasting <- function(timeS, h, lags = NULL, k = c(3, 5, 7),
 
 #' Number of training examples
 #'
-#' It computes the number of training examples that would have a KNN model
-#' with the specified parameters.
+#' It computes the number of training examples (the size of the training set)
+#' that would have a KNN model with the specified parameters.
 #'
 #' @inheritParams knn_forecasting
 #' @return An integer.
@@ -166,8 +168,8 @@ n_training_examples <- function(timeS, h, lags,
 #'    nearest neighbors.
 #'
 #' @examples
-#' pred <- knn_forecasting(UKgas, h = 4, lags = 1:4, k = 2, msas = "MIMO")
-#' nearest_neighbors(pred)
+#' m <- knn_forecasting(UKgas, h = 4, lags = 1:4, k = 2, msas = "MIMO")
+#' nearest_neighbors(m)
 #' @export
 nearest_neighbors <- function(forecast) {
   stopifnot(class(forecast) == "knnForecast")
@@ -230,21 +232,20 @@ nearest_neighbors_mimo <- function(forecast) {
   ))
 }
 
-#' Examples of the model associated with a prediction
+#' Training set associated to a model
 #'
-#' It allows to see the examples of the model associated to a
-#' \code{knnForecast} object.
+#' It allows to consult the training set associated to a model.
 #'
-#' @param forecast A \code{knnForecast} object.
-#' @return A matrix including the features and targets of the examples
-#'    associated with the model of a \code{knnForecast} object.
+#' @param model A \code{knnForecast} object.
+#' @return A matrix including the features and targets of the training set
+#'   associated with the model.
 #'
 #' @examples
-#' pred <- knn_forecasting(ts(1:8), h = 1, lags = 1:2, k = 2)
-#' knn_examples(pred)
+#' m <- knn_forecasting(ts(1:8), h = 1, lags = 1:2, k = 2)
+#' knn_examples(m)
 #' @export
-knn_examples <- function(forecast) {
-  stopifnot(class(forecast) == "knnForecast")
-  cbind(forecast$model$examples$patterns, forecast$model$examples$targets)
+knn_examples <- function(model) {
+  stopifnot(class(model) == "knnForecast")
+  cbind(model$model$examples$patterns, model$model$examples$targets)
 }
 

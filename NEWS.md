@@ -1,4 +1,7 @@
-# tsfknn
+# tsfknn 0.7.1
+* Changes to deal with new version of Rcpp
+
+# tsfknn 0.6.0
 
 * Bug fixed computing weights when neighbors are weighted by distance
 * When lags are selected automatically it is not allowed only one lag
